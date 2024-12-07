@@ -5,7 +5,7 @@ function bookmarklet() {
 
     // Function to extract video information from the current page
     function extractVideoInfo() {
-        const videos = Array.from(document.querySelectorAll('ytd-video-renderer, ytd-compact-video-renderer'))
+        const videos = Array.from(document.querySelectorAll('ytd-rich-item-renderer, ytd-compact-video-renderer'))
             .map(videoEl => {
                 const titleEl = videoEl.querySelector('#video-title');
                 const title = titleEl ? titleEl.textContent.trim() : '';
