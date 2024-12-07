@@ -1,4 +1,14 @@
-(function () {
+export default function ExtensionCode(userId) {
+    return (`// ==UserScript==
+// @name         YouTube Content Personalization
+// @namespace    http://tampermonkey.net/
+// @version      1.0
+// @description  Track YouTube video data and manipulate it
+// @match        https://www.youtube.com/*
+// @grant        none
+// ==/UserScript==
+
+(function() {
     const BACKEND_API_URL = 'http://localhost:5000/api/filter-videos';
 
     function sendDataToBackend(videoHtml) {
@@ -19,7 +29,7 @@
 
             const payload = {
                 videoList,
-                userId: 'user_1'
+                userId: '${userId}',
             };
 
             fetch(BACKEND_API_URL, {
@@ -44,10 +54,12 @@
                     console.log('Data successfully sent to backend');
                 })
                 .catch(error => {
-                    videoHtml.forEach((video) => { 
-                        video.style.display = 'inline-block';
-                        video.checked = true;
-                    });
+                    if(error.message && error.message.includes('Failed to fetch')) {
+                        videoHtml.forEach((video) => { 
+                            video.style.display = 'inline-block';
+                            video.checked = true;
+                        });
+                    }
                     console.error('Error sending data to backend:', error);
                 });
         } catch (error) {
@@ -95,4 +107,5 @@
     }
 
     init();
-})();
+})();`);
+}
