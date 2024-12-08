@@ -73,7 +73,9 @@ const UserInterestSelector = () => {
 			setJsCode(ExtensionCode(userIdref));
 			alert('Interests saved successfully!');
 
-			window.scrollTo(0, 400);
+			setTimeout(() => {
+				window.scrollTo(0, 400);
+			}, 1000);
 		} catch (error) {
 			console.error('Error saving interests:', error);
 			alert('Failed to save interests');
@@ -212,9 +214,10 @@ const UserInterestSelector = () => {
 			{jsCode && 
 			<div className="mt-6 p-4 bg-gray-100 rounded">
 				<div className="flex justify-between align-center">
-					<h3 className="font-bold">JavaScript Code Block:</h3>
+					<h3 className="font-bold text-black">JavaScript Code Block:</h3>
 					<p className="text-sm text-gray-600">
-						Copy and use this code in your project.
+						Copy and use this code in Tempermonkey Extension.<br />
+						Please read the documentation before proceeding.
 					</p>
 					<button
 						onClick={() => {
