@@ -91,14 +91,6 @@ export default function ExtensionCode(userId) {
         });
 
         observer.observe(targetNode, config);
-
-        let scrollTimeout;
-        window.addEventListener('scroll', () => {
-            clearTimeout(scrollTimeout);
-            scrollTimeout = setTimeout(() => {
-                callBackendFunction();
-            }, 200);
-        });
     }
 
     function init() {

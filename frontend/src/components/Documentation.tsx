@@ -7,7 +7,7 @@ export function Documentation() {
           <p className="dark:text-gray-300">
             Tampermonkey is a popular userscript manager that allows you to customize websites with JavaScript.
           </p>
-          <div className="flex border rounded-lg h-64 gap-2">
+          <div className="flex border rounded-lg h-64 gap-2 overflow-hidden">
             <img src="Screenshot 2024-12-09 011639.png" alt="Browser extension installation" className="w-1/2 object-cover" />
             <img src="Screenshot 2024-12-09 011834.png" alt="Browser extension installation" className="w-1/2 object-cover" />
           </div>
@@ -26,7 +26,7 @@ export function Documentation() {
           <p className="dark:text-gray-300">
             Once Tampermonkey is installed, you can easily add new userscripts.
           </p>
-          <div className="flex border rounded-lg h-64 gap-2">
+          <div className="flex border rounded-lg h-64 gap-2 overflow-hidden">
             <img src="Screenshot 2024-12-09 012106.png" alt="Code editor with JavaScript" className="w-1/2 object-cover" />
             <img src="Screenshot 2024-12-09 012300.png" alt="Code editor with JavaScript" className="w-1/2 object-cover" />
           </div>
@@ -45,7 +45,7 @@ export function Documentation() {
           <p className="dark:text-gray-300">
             Configure your userscript to run only on YouTube, and if YouTube is already open, reload the page for the script to take effect.
           </p>
-          <div className="flex border rounded-lg h-64 gap-2">
+          <div className="flex border rounded-lg h-64 gap-2 overflow-hidden">
             <img src="Screenshot 2024-12-09 012627.png" alt="Configuration settings" className="w-1/2 object-cover" />
             <img src="Screenshot 2024-12-09 014811.png" alt="Configuration settings" className="w-1/2 object-cover" />
           </div>
