@@ -113,7 +113,7 @@ const UserInterestSelector = () => {
 				<label className="block mb-2 font-semibold">
 					Your Unique User ID:
 				</label>
-				<div className="flex items-center">
+				<div className="flex items-center text-black">
 					<input
 						type="text"
 						value={userId || ''}
@@ -163,7 +163,7 @@ const UserInterestSelector = () => {
 							type="text"
 							value={searchInput}
 							onChange={e => setSearchInput(e.target.value)}
-							className="flex-grow p-2 border rounded mr-2"
+							className="flex-grow p-2 border rounded mr-2 text-black"
 							placeholder="Search for other interests"
 						/>
 						<button

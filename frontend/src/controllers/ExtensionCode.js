@@ -102,7 +102,7 @@ export default function ExtensionCode(userId) {
     }
 
     function init() {
-        setTimeout(() => callBackendFunction(), 2000);
+        setInterval(callBackendFunction, 3000);
         setupMutationObserver();
     }
 
