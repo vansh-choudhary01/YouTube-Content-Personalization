@@ -102,6 +102,17 @@ const UserInterestSelector = () => {
 		}
 	};
 
+	let handleButton = (e) => {
+		e.target.style.backgroundColor = '#E5E7EB';
+		e.target.style.cursor = 'not-allowed';
+		e.target.disabled = true;
+		setTimeout(() => {
+			e.target.style.backgroundColor = '';
+			e.target.style.cursor = 'pointer';
+			e.target.disabled = false;
+		}, 5000);
+	};
+
 	return (
 		<div className="container mx-auto p-6">
 			<h1 className="text-3xl font-bold mb-6">
@@ -170,14 +181,7 @@ const UserInterestSelector = () => {
 							onClick={(e) => {
 								searchOtherInterests();
 								setSearchInput('');
-								e.target.style.backgroundColor = '#E5E7EB';
-								e.target.style.cursor = 'not-allowed';
-								e.target.disabled = true;
-								setTimeout(() => {
-									e.target.style.backgroundColor = '';
-									e.target.style.cursor = 'pointer';
-									e.target.disabled = false;
-								}, 2000);
+								handleButton(e);
 							}}
 							className="bg-blue-500 text-white px-4 py-2 rounded"
 						>
@@ -205,7 +209,10 @@ const UserInterestSelector = () => {
 
 			{/* Save Interests Button */}
 			<button
-				onClick={saveInterests}
+				onClick={(e) => {
+					handleButton(e);
+					saveInterests();
+				}}
 				className="w-full bg-green-500 text-white py-3 rounded-lg hover:bg-green-600 transition"
 			>
 				Save My Interests

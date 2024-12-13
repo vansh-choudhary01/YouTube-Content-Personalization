@@ -58,12 +58,41 @@ router.post('/interests', async (req, res) => {
       user = new UserInterest({ userId });
     }
 
-    user.interests = interests;
-    user.channelPreferences = channelPreferences;
-    await user.save();
+    async function updateUserInterests() {
+      try {
+        let prompt = `Suggest 50+(you can return more than 50 if you want) interests that are related to the following interests:
+    ${interests.map(interest => interest).join(',')}
+    respond with a comma separated list of interests, don't include any other text in your response.
+    i'll use your response interests to check youtube video title and identify the videos that are related to the interests. so response should be related to the possible titles words.
+    don't include any extra space except between the interest name if any interest name is more then one word then use space to separate the words.
+    `;
 
-    res.status(200).json(user);
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
+        const recommendations = await model.generateContent(prompt);
+
+        let response = recommendations.response.candidates[0].content.parts[0].text;
+        response = response.split(',');
+        if (response.length > 0 && response[response.length - 1].includes('\n')) {
+          response[response.length - 1] = response[response.length - 1].replace('\n', '');
+        }
+        // save responce in lower case with pre interests
+        response = response.map(interest => interest.toLowerCase());
+        response = response.concat(interests.map(interest => interest.toLowerCase()));
+        console.log(response);
+
+        user.interests = response;
+        user.channelPreferences = channelPreferences;
+        await user.save();
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    updateUserInterests();
+    res.status(200).json({ message: "success" }); // Return success message
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: 'Error saving interests', error });
   }
 });
