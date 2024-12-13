@@ -12,6 +12,9 @@ export default function ExtensionCode(userId) {
     const BACKEND_API_URL = 'http://localhost:5000/api/filter-videos';
 
     function sendDataToBackend(videoHtml) {
+        if(!videoHtml.length || videoHtml.length === 0) {
+            return;
+        }
         try {
             const videoList = videoHtml
                 .map(videoEl => {
@@ -48,7 +51,7 @@ export default function ExtensionCode(userId) {
                 .then(data => {
                     console.log('Response from backend:', data);
                     data.array.forEach((element, idx) => {
-                        videoHtml[idx].style.display = element.includes('true') ? '' : 'none';
+                        videoHtml[idx].style.display = element ? '' : 'none';
                         videoHtml[idx].checked = true;
                     });
                     console.log('Data successfully sent to backend');
