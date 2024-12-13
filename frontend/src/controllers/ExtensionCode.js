@@ -1,3 +1,5 @@
+import { backendUrl } from '../environment.js';
+
 export default function ExtensionCode(userId) {
     return (`// ==UserScript==
 // @name         YouTube Content Personalization
@@ -9,7 +11,7 @@ export default function ExtensionCode(userId) {
 // ==/UserScript==
 
 (function() {
-    const BACKEND_API_URL = 'http://localhost:5000/api/filter-videos';
+    const BACKEND_API_URL = '${backendUrl}/api/filter-videos';
 
     function sendDataToBackend(videoHtml) {
         if(!videoHtml.length || videoHtml.length === 0) {

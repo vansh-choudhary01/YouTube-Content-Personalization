@@ -3,8 +3,8 @@ import axios from 'axios';
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ExtensionCode from '../controllers/ExtensionCode';
+import { backendUrl } from '../environment.js';
 
-const backendUrl = 'https://youtube-content-personalization.onrender.com';
 // Categories and Subcategories
 const CATEGORIES = {
 	Technology: [
