@@ -4,6 +4,7 @@ import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { dracula } from "react-syntax-highlighter/dist/esm/styles/prism";
 import ExtensionCode from '../controllers/ExtensionCode';
 
+const backendUrl = 'https://youtube-content-personalization.onrender.com';
 // Categories and Subcategories
 const CATEGORIES = {
 	Technology: [
@@ -65,7 +66,7 @@ const UserInterestSelector = () => {
 			const flatInterests = Object.values(selectedInterests).flat();
 
 			let userIdref = userId || generateUserId();
-			const response = await axios.post('http://localhost:5000/api/interests', {
+			const response = await axios.post(`${backendUrl}/api/interests`, {
 				userId: userIdref,
 				interests: flatInterests
 			});
@@ -88,7 +89,7 @@ const UserInterestSelector = () => {
 			return;
 		}
 		try {
-			const response = await axios.get('http://localhost:5000/api/search-interests', {
+			const response = await axios.get(`${backendUrl}/api/search-interests`, {
 				params: {
 					query: searchInput.trim()
 				}
