@@ -58,46 +58,12 @@ router.post('/interests', async (req, res) => {
       user = new UserInterest({ userId });
     }
 
-    async function updateUserInterests() {
-      try {
-        let prompt = `Generate 50+ (or more) specific and relevant words associated with the following interests:  ${interests.join(',')}  
+    user.interests = interests;
+    user.channelPreferences = channelPreferences;
+    await user.save();
 
-Respond with a concise, comma-separated list of words, avoiding any additional text or formatting.  
-
-Exclude generic terms or phrases that could fit multiple categories, such as: 'project ideas', 'beginner', 'intermediate', 'advanced', 'tips and tricks', 'best practices', 'troubleshooting', 'case studies', 'examples', 'step by step', 'for beginners', 'easy', 'simple', 'complex', 'challenges', 'effects'.  
-
-Focus on unique, context-specific terms that are directly tied to the provided interests. For example:  
-- If the interest is **music**, return words like (make sure to include the following words also): 'melody', 'rhythm', 'song', 'songs', 'instrumentation', 'guitar', 'chorus', 'symphony'.  
-- If the interest is **programming**, return words like (make sure to include the following words also): 'coding', 'javascript', 'python', 'react', 'c++', 'algorithm', 'debugging'.  
-- If the interest is **AI**, return words like (make sure to include the following words also): 'ai', 'deep learning', 'machine learning', 'artificial intelligence', 'neural networks', 'data science', 'natural language processing'.  
-
-Only include words that are highly relevant and commonly used in the context of the given interest to ensure alignment with related YouTube video titles.`;  
-
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
-        const recommendations = await model.generateContent(prompt);
-
-        let response = recommendations.response.candidates[0].content.parts[0].text;
-        response = response.split(',');
-        if (response.length > 0 && response[response.length - 1].includes('\n')) {
-          response[response.length - 1] = response[response.length - 1].replace('\n', '');
-        }
-        // save responce in lower case with pre interests
-        response = response.map(interest => interest.toLowerCase().trim());
-        response = response.concat(interests.map(interest => interest.toLowerCase()));
-
-        user.interests = response;
-        user.channelPreferences = channelPreferences;
-        await user.save();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-    updateUserInterests();
     res.status(200).json({ message: "success" }); // Return success message
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: 'Error saving interests', error });
   }
 });
@@ -129,20 +95,42 @@ router.post('/filter-videos', async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    let filteredVideos = videoList.map(video => {
-      for (let interest of user.interests) {
-        if (video.title.toLowerCase().split(' ').includes(interest)) {
-          console.log(video.title.toLowerCase() + "   -->   " + interest);
-          return true;
-        }
-      }
+    const prompt = `YouTube Content Personalization
+    
+    You are a YouTube content personalization assistant. 
+    Your task is to recommend videos based on the user's interests.
+    
+    Here are the user's interests if interests is exists:
+    ${user.interests.map(interest => `- ${interest}`).join('\n')}
+      
+    Here are the videos that you can recommend if videos is exists:
+    ${videoList.map(video => `- ${video.title}`).join('\n')}
+    
+    respond with a comma separated list of video (true/false) values, where true indicates that the video should be recommended, and false indicates that it should not be recommended.
+    For example: true,false,true,false,true
+    don't include any other text in your response.
+    if you confuse then respond with false,false,... interests.length times
+    `;
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-      return false;
-    });
+    const recommendations = await model.generateContent(prompt);
 
-    res.status(200).json({ array: filteredVideos });
+    let response = recommendations.response.candidates[0].content.parts[0].text;
+    response = response.split(',');
+    if (response.length > 0 && response[response.length - 1].includes('\n')) {
+      response[response.length - 1] = response[response.length - 1].replace('\n', '');
+    }
+    if (response.length !== user.interests.length) {
+      response = response.concat(
+        Array(Math.max(user.interests.length - response.length, 0)).fill('false')
+      );
+    }
+
+    res.status(200).json({ array: response });
   } catch (error) {
-    res.status(500).json({ message: 'Error searching interests', error });
+    console.error(error);
+    res.status(500).json({ message: 'Error filtering videos', error });
   }
 });
 

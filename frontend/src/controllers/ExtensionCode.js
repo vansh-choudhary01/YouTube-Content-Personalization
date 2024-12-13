@@ -51,10 +51,9 @@ export default function ExtensionCode(userId) {
                 .then(data => {
                     console.log('Response from backend:', data);
                     data.array.forEach((element, idx) => {
-                        videoHtml[idx].style.display = element ? '' : 'none';
+                        videoHtml[idx].style.display = element.includes('true') ? '' : 'none';
                         videoHtml[idx].checked = true;
                     });
-                    console.log('Data successfully sent to backend');
                 })
                 .catch(error => {
                     if(error.message && error.message.includes('Failed to fetch')) {
